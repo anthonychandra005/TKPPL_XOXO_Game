@@ -54,3 +54,24 @@ div#board table tr td{
     border: 1px solid royalblue;
     cursor: pointer;
 }
+
+/* INI STYLE YANG DIBAGIAN KIRI (O Turn) dan KANAN (X Turn)*/
+div.container div#oturn{
+    float: left;
+    margin-left: 50px;
+    padding: 205px 100px;
+    text-align: center;
+    font-size: 50px;
+    color: #ee82ee;
+}
+
+div.container div#xturn{
+    float: right;
+    margin-right: 80px;
+    padding: 205px 100px;
+    text-align: center;
+    font-size: 50px;
+    visibility: hidden;
+    color: #ffff31;
+}
+

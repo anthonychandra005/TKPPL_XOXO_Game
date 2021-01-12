@@ -1,6 +1,21 @@
+var board
+var round
+var count
+var tie
+var end
+var winner
+var win_lines = Array.from(Array(5).keys)
+const player1 = "O"
+const player2 = "X"
+
 var myboard = document.getElementById("board")
 generateBoard()
 
+var board_piece = document.querySelectorAll(".board_piece")
+var oturn = document.getElementById("oturn")
+var xturn = document.getElementById("xturn")
+
+startGame()
 
 function generateBoard(){
     var mytable = document.createElement("table")
@@ -22,3 +37,189 @@ function generateBoard(){
     }    
 }
 
+function startGame(){
+    console.log("game start")
+    winner = ""
+    round = -1
+    end = false
+    tie = false
+    board = Array.from(Array(400).keys)
+    for(var i = 0; i < board_piece.length; i++){
+        board_piece[i].innerHTML = ""
+        board_piece[i].style.backgroundColor = "black"
+        board_piece[i].addEventListener('click', get_pos, false)
+    }
+}
+
+function get_pos(pos){
+    if(board[pos.target.id - 1] == undefined){
+        piece_clicked(pos.target.id, round++)
+    }
+}
+
+function piece_clicked(posID, current_round){
+    var player = ""
+    if(round % 2 == 0) player = player1
+    else player = player2
+    board[posID - 1] = player
+
+    
+
+    //Player 1 = font color : Lavender magenta #ee82ee rgb(238, 130, 238)
+    //Player 2 = font color : daffodil #ffff31 rgb(255, 255, 49)
+    if(player == "X") document.getElementById(posID).style.color = "#ffff31"
+    else document.getElementById(posID).style.color = "#ee82ee"
+    document.getElementById(posID).innerHTML = player
+
+    if(current_round%2==0) {
+        oturn.style.visibility = "visible"
+        xturn.style.visibility = "hidden"
+    }
+    else {
+        oturn.style.visibility = "hidden"
+        xturn.style.visibility = "visible"
+    }
+
+    var end = checkWin(posID - 1, current_round, player)
+    if(end) gameover()
+    if(checkTie(round)){
+        tie = true
+        gameover()
+    }
+}
+
+function gameover(){
+    //game end / tombol di nonaktifkan
+    for(var i = 0; i<board_piece.length; i++){
+        board_piece[i].removeEventListener('click', get_pos, false)
+    }
+
+    if(round%2==0) {
+        oturn.style.visibility = "visible"
+        oturn.innerHTML = "YOU WIN"
+        xturn.style.visibility = "hidden"
+    }
+    else{
+        xturn.style.visibility = "visible"
+        xturn.innerHTML = "YOU WIN"
+        oturn.style.visibility = "hidden"
+    } 
+    
+    if(winner != "") {
+        for(var i=0; i<5; i++){
+            board_piece[win_lines[i]].style.backgroundColor = "royalblue"
+        }
+
+    }
+    else{
+        if(tie) {
+            oturn.innerHTML = "TIE"
+            xturn.innerHTML = "TIE"
+        }
+    }
+}
+
+function checkTie(current_round){
+    if(current_round>=399) return true
+    else return false
+}
+
+function checkWin(current_pos, current_round, player){
+    //console.log(current_round)
+    //console.log(current_pos)
+    
+    //pengecekan kemungkinan game dapat berakhir dimulai dari round 9
+    if(current_round > 6){
+        var indexVertical = current_pos - 80
+        var indexHorizontal = current_pos - 4
+        var indexDiagonalLeft = current_pos - 84
+        var indexDiagonalRight = current_pos - 76
+        
+        //Checking Vertically
+        var win = 0
+        for(var i = 0; i < 9; i++){
+            //console.log(indexVertical)
+            if(board[indexVertical] == player){
+                win_lines[win] = indexVertical
+                win++
+                if(win >= 5) break
+            }
+            else{
+                win = 0
+            }
+            indexVertical+= 20
+            //console.log(board[indexVertical] + "  " + player + "  " + win)
+        }
+
+        if(win == 5) {
+            //alert("CONGRATS, " +  (player == "X" ? "Player 2" : "Player 1")   + " WIN")
+            winner = (player == "X" ? "Player 2" : "Player 1")
+            return true
+        }
+
+        //Checking Horizontally
+        win = 0
+        for(var i = 0; i < 9; i++){
+            if(board[indexHorizontal] == player){
+                win_lines[win] = indexHorizontal
+                win++
+                if(win >= 5) break
+            }
+            else{
+                win = 0
+            }
+            indexHorizontal++
+            //console.log(board[indexHorizontal] + "  " + player + "  " + win)
+        }
+
+        if(win == 5) {
+            //alert("CONGRATS, " +  (player == "X" ? "Player 2" : "Player 1")   + " WIN")
+            winner = (player == "X" ? "Player 2" : "Player 1")
+            return true
+        }
+
+        // Checking Diagonal From Left
+        win = 0
+        for(var i = 0; i < 9; i++){
+            if(board[indexDiagonalLeft] == player){
+                win_lines[win] = indexDiagonalLeft
+                win++
+                if(win >= 5) break
+            }
+            else{
+                win = 0
+            }
+            indexDiagonalLeft+=21
+            //console.log(board[indexHorizontal] + "  " + player + "  " + win)
+        }
+
+        if(win == 5) {
+            //alert("CONGRATS, " +  (player == "X" ? "Player 2" : "Player 1")   + " WIN")
+            winner = (player == "X" ? "Player 2" : "Player 1")
+            return true
+        }
+
+        // Checking Diagonal From Right
+        win = 0
+        for(var i = 0; i < 9; i++){
+            if(board[indexDiagonalRight] == player){
+                win_lines[win] = indexDiagonalRight
+                win++
+                if(win >= 5) break
+            }
+            else{
+                win = 0
+            }
+            indexDiagonalRight+=19
+            //console.log(board[indexHorizontal] + "  " + player + "  " + win)
+        }
+
+        if(win == 5) {
+            //alert("CONGRATS, " +  (player == "X" ? "Player 2" : "Player 1")   + " WIN")
+            winner = (player == "X" ? "Player 2" : "Player 1")
+            return true
+        }
+    }
+    
+    return false
+}
