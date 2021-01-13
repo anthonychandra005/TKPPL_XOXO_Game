@@ -64,7 +64,6 @@ function piece_clicked(posID, current_round){
     board[posID - 1] = player
 
     
-
     //Player 1 = font color : Lavender magenta #ee82ee rgb(238, 130, 238)
     //Player 2 = font color : daffodil #ffff31 rgb(255, 255, 49)
     if(player == "X") document.getElementById(posID).style.color = "#ffff31"
@@ -94,6 +93,7 @@ function gameover(){
         board_piece[i].removeEventListener('click', get_pos, false)
     }
 
+    //untuk kiri/kanan siapa yang win
     if(round%2==0) {
         oturn.style.visibility = "visible"
         oturn.innerHTML = "YOU WIN"
@@ -106,17 +106,26 @@ function gameover(){
     } 
     
     if(winner != "") {
+        //tandai piece yang straight 5 (WIN)
         for(var i=0; i<5; i++){
             board_piece[win_lines[i]].style.backgroundColor = "royalblue"
         }
 
+        player_win.innerHTML = winner + " WIN"
     }
     else{
         if(tie) {
-            oturn.innerHTML = "TIE"
+            player_win.innerHTML = "TIE"
+
+            xturn.style.visibility = "visible"
             xturn.innerHTML = "TIE"
+            oturn.style.visibility = "visible"
+            oturn.innerHTML = "TIE"
         }
+        else if(round%2==0) player_win.innerHTML = "PLAYER 1" + " WIN"
+        else player_win.innerHTML = "PLAYER 2" + " WIN"
     }
+
 }
 
 function checkTie(current_round){
@@ -160,7 +169,12 @@ function checkWin(current_pos, current_round, player){
         //Checking Horizontally
         win = 0
         for(var i = 0; i < 9; i++){
-            if(board[indexHorizontal] == player){
+            if(indexHorizontal%20 == 0){ //biar ga nembus, array[19] pisah dengan array[20]
+                win = 0
+                win_lines[win] = indexHorizontal
+                win++
+            }
+            else if(board[indexHorizontal] == player){
                 win_lines[win] = indexHorizontal
                 win++
                 if(win >= 5) break
