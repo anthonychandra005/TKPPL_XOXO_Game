@@ -207,7 +207,12 @@ function checkWin(current_pos, current_round, player){
         // Checking Diagonal From Left
         win = 0
         for(var i = 0; i < 9; i++){
-            if(board[indexDiagonalLeft] == player){
+            if(indexDiagonalLeft%20 == 0){ //biar ga nembus, array[19] pisah dengan array[20]
+                win = 0
+                win_lines[win] = indexDiagonalLeft
+                win++
+            }
+            else if(board[indexDiagonalLeft] == player){
                 win_lines[win] = indexDiagonalLeft
                 win++
                 if(win >= 5) break
@@ -228,7 +233,10 @@ function checkWin(current_pos, current_round, player){
         // Checking Diagonal From Right
         win = 0
         for(var i = 0; i < 9; i++){
-            if(board[indexDiagonalRight] == player){
+            if(indexDiagonalRight%20 == 0){ //biar ga nembus, array[19] pisah dengan array[20]
+                win = 0
+            }
+            else if(board[indexDiagonalRight] == player){
                 win_lines[win] = indexDiagonalRight
                 win++
                 if(win >= 5) break
@@ -239,14 +247,12 @@ function checkWin(current_pos, current_round, player){
             indexDiagonalRight+=19
             //console.log(board[indexHorizontal] + "  " + player + "  " + win)
         }
-
         if(win == 5) {
             //alert("CONGRATS, " +  (player == "X" ? "Player 2" : "Player 1")   + " WIN")
             winner = (player == "X" ? "Player 2" : "Player 1")
             return true
         }
     }
-    
     return false
 }
 
